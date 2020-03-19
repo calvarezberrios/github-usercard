@@ -32,6 +32,8 @@ function appendCard(data) {
   const cards = document.querySelector(".cards");
   cards.appendChild(cardCreator(data));
 }
+
+
 /* function getAxiosData_createCard(user) {
   axios.get(`https://api.github.com/users/${user}`)
   .then(response => {
@@ -119,11 +121,13 @@ function cardCreator(dataObj) {
 
   // Adding classes and info
   card.classList.add("card");
-  image.src = dataObj.avatar_url;
   cardInfo.classList.add("card-info");
   name.classList.add("name");
-  name.textContent = dataObj.name;
   username.classList.add("username");
+
+  // Adding properties and text
+  image.src = dataObj.avatar_url; 
+  name.textContent = dataObj.name;  
   username.textContent = dataObj.login;
   location.textContent = `Location: ${dataObj.location === null ? "Not Available" : dataObj.location}`;
   profile.textContent = "Profile: ";
