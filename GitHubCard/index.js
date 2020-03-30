@@ -3,6 +3,52 @@
            https://api.github.com/users/<your name>
 */
 
+
+axios.get(`https://api.github.com/users/calvarezberrios`)
+  .then(response => {
+    appendCard(response.data);
+    return response.data.followers_url;
+  })
+  .then(followers => {
+    return axios.get(followers);
+  })
+  .then(response => {
+    response.data.forEach(follower => {
+      axios.get(follower.url)
+        .then(response => {
+          appendCard(response.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  })
+
+
+function appendCard(data) {
+  const cards = document.querySelector(".cards");
+  cards.appendChild(cardCreator(data));
+}
+
+
+/* function getAxiosData_createCard(user) {
+  axios.get(`https://api.github.com/users/${user}`)
+  .then(response => {
+    //console.log(response.data);
+    const cards = document.querySelector(".cards");
+    cards.appendChild(cardCreator(response.data));
+  })
+  .catch(err => {
+    console.log(err);
+  });
+}
+
+getAxiosData_createCard("calvarezberrios"); */
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -14,6 +60,9 @@
            create a new component and add it to the DOM as a child of .cards
 */
 
+
+
+
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
           , manually find some other users' github handles, or use the list found 
@@ -24,7 +73,10 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+// const followersArray = ["melissa-24", "jessbonanno", "walter-futch", "adhsams", "davidmoates"];
+// followersArray.forEach(follower => getAxiosData_createCard(follower));
+
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -45,6 +97,53 @@ const followersArray = [];
 </div>
 
 */
+
+
+function cardCreator(dataObj) {
+
+  // Creating Elements
+  const card = document.createElement("div");
+  const image = document.createElement("img");
+  const cardInfo = document.createElement("div");
+  const name = document.createElement("h3");
+  const username = document.createElement("p");
+  const location = document.createElement("p");
+  const profile = document.createElement("p");
+  const profileAddress = document.createElement("a");
+  const followers = document.createElement("p");
+  const following = document.createElement("p");
+  const bio = document.createElement("p");
+
+  // Connecting Elements together
+  card.append(image, cardInfo);
+  cardInfo.append(name, username, location, profile, followers, following, bio);
+  
+
+  // Adding classes and info
+  card.classList.add("card");
+  cardInfo.classList.add("card-info");
+  name.classList.add("name");
+  username.classList.add("username");
+
+  // Adding properties and text
+  image.src = dataObj.avatar_url; 
+  name.textContent = dataObj.name;  
+  username.textContent = dataObj.login;
+  location.textContent = `Location: ${dataObj.location === null ? "Not Available" : dataObj.location}`;
+  profile.textContent = "Profile: ";
+  profile.appendChild(profileAddress);
+  profileAddress.href = dataObj.html_url;
+  profileAddress.textContent = dataObj.html_url;
+  followers.textContent = `Followers: ${dataObj.followers}`;
+  following.textContent = `Following: ${dataObj.following}`;
+  bio.textContent = `Bio: ${dataObj.bio === null ? "No Bio added" : dataObj.bio}`;
+
+
+  return card;
+}
+
+
+
 
 /* List of LS Instructors Github username's: 
   tetondan
